@@ -1,56 +1,59 @@
-CREATE TABLE Station
-(
-	Station_number int
-		CONSTRAINT Station_pk
-			PRIMARY KEY,
-	Hours_of_operation int,
-	Address varchar(100)
+CREATE TABLE station(
+	station_number INTEGER,
+	hours_of_operation INTEGER,
+	Address VARCHAR(100),
+	CONSTRAINT station_pk
+		PRIMARY KEY(station_number)
 );
 
-CREATE TABLE Rail_Line
+CREATE TABLE railline
 (
-	Stations_on_path varchar(100)
-		CONTSTRAINT Rail Line_pk
-			PRIMARY KEY,
-	Speed_limit int,
-	Distance_btwn_stations int,
-	CONSTRAINT Station_number_fk
-		FOREIGN KEY(Station_number) REFERENCES Station(Station_number)
+	speed_limit INTEGER,
+	distance_btwn_stations REAL,
+	stations_on_railine VARCHAR(100),
+	station_num_railline INTEGER,
+	CONSTRAINT railline_pk
+		PRIMARY KEY(stations_on_railine),
+	CONSTRAINT railline_fk
+		FOREIGN KEY(station_num_railline) REFERENCES station(station_number)
 );
 
-CREATE TABLE Route
+CREATE TABLE route
 (
-	Path_of_route varchar(100)
-		CONSTRAINT Route_pk
-			PRIMARY KEY,
-	CONSTRAINT Stations_on_path_fk
-		FOREIGN KEY (Stations_on_path) REFERENCES Rail_Line(Stations_on_path)
+	path_of_route VARCHAR(100),
+	route_station_num INTEGER,
+	CONSTRAINT route_pk
+		PRIMARY KEY(path_of_route),
+	CONSTRAINT route_station_num_fk
+		FOREIGN KEY(route_station_num) REFERENCES station(station_number)
 );
 
-CREATE TABLE Train
+CREATE TABLE train
 (
-	Price_per_mile int,
-	Num_seats int,
-	Top_speed int,
-	PRIMARY KEY(Price_per_mile, Num_Seats, Top_speed)
+	price_per_mile REAL,
+	num_seats INTEGER,
+	top_speed REAL,
+	CONSTRAINT 
+		PRIMARY KEY(price_per_mile, num_seats, top_speed)
 );
 
-CREATE TABLE Schedule
+CREATE TABLE schedule
 (
-	Route varchar(100),
-	Day_of_week varchar(100),
-	Times_of_day varchar(100),
-	PRIMARY KEY(Route, Day_of_week, Times_of_day)
+	route VARCHAR(100),
+	day_of_week VARCHAR(100),
+	times_of_day VARCHAR(100),
+	CONSTRAINT 
+		PRIMARY KEY(route, day_of_week, times_of_day)
 );
 
-CREATE TABLE Passenger
+CREATE TABLE passenger
 (
-	CustomerID int
-		CONSTRAINT Route_pk
-			PRIMARY KEY,
-	First_name varchar(50),
-	Last_name varchar(50),
-	Address varchar(100),
-	Email varchar(100),
-	Telephone_number int
+	first_name VARCHAR(50),
+	last_name VARCHAR(50),
+	address VARCHAR(100),
+	email VARCHAR(100),
+	telephone_number INTEGER,
+	customerid INTEGER, 
+	CONSTRAINT 
+		PRIMARY KEY(customerid)
 );
