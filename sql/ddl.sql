@@ -1,5 +1,5 @@
 CREATE TABLE station(
-	station_number INTEGER,
+	station_number INTEGER NOT NULL,
 	hours_of_operation INTEGER,
 	Address VARCHAR(100),
 	CONSTRAINT station_pk
@@ -10,40 +10,49 @@ CREATE TABLE railline
 (
 	speed_limit INTEGER,
 	distance_btwn_stations REAL,
-	stations_on_railine VARCHAR(100),
-	station_num_railline INTEGER,
+	station_a VARCHAR(10) NOT NULL,
+	station_b VARCHAR(10) NOT NULL,
 	CONSTRAINT railline_pk
-		PRIMARY KEY(stations_on_railine),
-	CONSTRAINT railline_fk
-		FOREIGN KEY(station_num_railline) REFERENCES station(station_number)
+		PRIMARY KEY(station_a, station b),
+	CONSTRAINT railline_fk_a
+		FOREIGN KEY(station_a) REFERENCES station(station_number)
+	CONSTRAINT railline_fk_b
+		FOREIGN KEY(station_b) REFERENCES station(station_number)
 );
 
 CREATE TABLE route
 (
-	path_of_route VARCHAR(100),
-	route_station_num INTEGER,
+	starting_rail_line_station VARCHAR(10) NOT NULL,
+	ending_rail_line_station VARCHAR(10) NOT NULL,
 	CONSTRAINT route_pk
-		PRIMARY KEY(path_of_route),
-	CONSTRAINT route_station_num_fk
-		FOREIGN KEY(route_station_num) REFERENCES station(station_number)
+		PRIMARY KEY(starting_rail_line_station, ending_rail_line_station),
+	CONSTRAINT route_fk_a
+		FOREIGN KEY(starting_rail_line_station) REFERENCES station(station_number)
+	CONSTRAINT route_fk_b
+		FOREIGN KEY(ending_rail_line_station) REFERENCES station(station_number)
 );
 
 CREATE TABLE train
 (
-	price_per_mile REAL,
-	num_seats INTEGER,
-	top_speed REAL,
+	price_per_mile REAL NOT NULL,
+	num_seats INTEGER NOT NULL,
+	top_speed REAL NOT NULL,
 	CONSTRAINT 
 		PRIMARY KEY(price_per_mile, num_seats, top_speed)
 );
 
 CREATE TABLE schedule
 (
-	route VARCHAR(100),
-	day_of_week VARCHAR(100),
+	routeID VARCHAR(100) NOT NULL,
+	day_of_week VARCHAR(100) NOT NULL,
 	times_of_day VARCHAR(100),
+	trainID VARCHAR(100),
 	CONSTRAINT 
-		PRIMARY KEY(route, day_of_week, times_of_day)
+		PRIMARY KEY(route, day_of_week, times_of_day),
+	CONSTRAINT
+		FOREIGN KEY(trainID) REFERENCES train(price_per_mile, num_seats, top_speed)
+	CONSTRAINT
+		FOREIGN KEY(routeID) REFERENCES route(starting_rail_line_station, ending_rail_line_station)
 );
 
 CREATE TABLE passenger
@@ -53,7 +62,7 @@ CREATE TABLE passenger
 	address VARCHAR(100),
 	email VARCHAR(100),
 	telephone_number INTEGER,
-	customerid INTEGER, 
+	customerid INTEGER NOT NULL, 
 	CONSTRAINT 
 		PRIMARY KEY(customerid)
 );
