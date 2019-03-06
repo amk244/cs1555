@@ -10,24 +10,24 @@ CREATE TABLE railline
 (
 	speed_limit INTEGER,
 	distance_btwn_stations REAL,
-	station_a VARCHAR(10) NOT NULL,
-	station_b VARCHAR(10) NOT NULL,
+	station_a INTEGER NOT NULL,
+	station_b INTEGER NOT NULL,
 	CONSTRAINT railline_pk
 		PRIMARY KEY(station_a, station b),
 	CONSTRAINT railline_fk_a
-		FOREIGN KEY(station_a) REFERENCES station(station_number)
+		FOREIGN KEY(station_a) REFERENCES station(station_number),
 	CONSTRAINT railline_fk_b
 		FOREIGN KEY(station_b) REFERENCES station(station_number)
 );
 
 CREATE TABLE route
 (
-	starting_rail_line_station VARCHAR(10) NOT NULL,
-	ending_rail_line_station VARCHAR(10) NOT NULL,
+	starting_rail_line_station INTEGER NOT NULL,
+	ending_rail_line_station INTEGER NOT NULL,
 	CONSTRAINT route_pk
 		PRIMARY KEY(starting_rail_line_station, ending_rail_line_station),
 	CONSTRAINT route_fk_a
-		FOREIGN KEY(starting_rail_line_station) REFERENCES station(station_number)
+		FOREIGN KEY(starting_rail_line_station) REFERENCES station(station_number),
 	CONSTRAINT route_fk_b
 		FOREIGN KEY(ending_rail_line_station) REFERENCES station(station_number)
 );
@@ -50,7 +50,7 @@ CREATE TABLE schedule
 	CONSTRAINT 
 		PRIMARY KEY(route, day_of_week, times_of_day),
 	CONSTRAINT
-		FOREIGN KEY(trainID) REFERENCES train(price_per_mile, num_seats, top_speed)
+		FOREIGN KEY(trainID) REFERENCES train(price_per_mile, num_seats, top_speed),
 	CONSTRAINT
 		FOREIGN KEY(routeID) REFERENCES route(starting_rail_line_station, ending_rail_line_station)
 );
