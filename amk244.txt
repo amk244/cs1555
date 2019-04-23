@@ -1,0 +1,13 @@
+
+Grades - 
+phase I - 27
+phase II - 36
+
+Some feedback/suggestions - 
+
+1. Can use array data type to save stations/distance/stops on route / rail line table. This way order can also be maintained.
+2. add reservation entity, this will help in counting seats reserved / available per train
+
+
+(Note - These are not final grdes for the project, after submission and grading of the phase 3 of the project, final grades will be decided.)
+
