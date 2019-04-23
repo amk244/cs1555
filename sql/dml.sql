@@ -3,15 +3,17 @@
 --*******1.1*******
 --1.1.1 CUSTOMER FORM
 --Add a customer to the customer table
-CREATE OR REPLACE PROCEDURE insert_customer(fname VARCHAR, lname VARCHAR,str VARCHAR, t VARCHAR, pcode VARCHAR, emailaddr VARCHAR,telnumber VARCHAR)
+--DROP FUNCTION insert_customer(fname VARCHAR, lname VARCHAR,str VARCHAR, t VARCHAR, pcode VARCHAR, emailaddr VARCHAR,telnumber VARCHAR);
+CREATE OR REPLACE FUNCTION insert_customer(fname VARCHAR, lname VARCHAR,str VARCHAR, t VARCHAR, pcode VARCHAR, emailaddr VARCHAR,telnumber VARCHAR) returns integer
 AS $$
-DECLARE randid integer;
+DECLARE rand_id integer;
 BEGIN
-    SELECT (random()*200000)::int into randid;
-    INSERT INTO customer (customer_id, first_name, last_name, street, town, postal_code, email, telephone_number) VALUES (randid, fname, lname, str, t, pcode, emailaddr, telnumber);
+    SELECT (random()*200000)::int into rand_id;
+    INSERT INTO customer (customer_id, first_name, last_name, street, town, postal_code, email, telephone_number) VALUES (rand_id, fname, lname, str, t, pcode, emailaddr, telnumber);
+    RETURN rand_id;
 END
 $$ LANGUAGE plpgsql;
---CALL insert_customer('bob', 'smith', '402 wolf hall', 'university park', '16802', 'bobsmith2@gmail.com', '412-516-7255');
+--CALL insert_customer('bob', 'smith', '402 wolf hall', 'university park', '16802', 'bobsmith2@gmail.com', '412-516-7255') as t;
 
 --Edit a customer in the customer table
 CREATE OR REPLACE PROCEDURE edit_customer(cust_id INTEGER, fname VARCHAR, lname VARCHAR,str VARCHAR, t VARCHAR, pcode VARCHAR, emailaddr VARCHAR,telnumber VARCHAR)
@@ -37,31 +39,35 @@ BEGIN
   SELECT * FROM customer;
 END
 $$ LANGUAGE plpgsql;
---SELECT * FROM view_customers() as t;
+--SELECT * FROM view_customers();
 
 --1.2 Finding A Trip Between Two Stations
 --1.2.1 Single Route Trip Search; Find all routes that stop at a particular start station, a particular end station, and the time of day
+--DROP FUNCTION single_route(integer,integer,character varying);
 CREATE OR REPLACE FUNCTION single_route(start_station INTEGER, end_station INTEGER, weekday VARCHAR) RETURNS SETOF route
 AS $$
   BEGIN
-    RETURN QUERY
     --assumed that order does not matter; most likely need to add order to the route_stops/stations table
     SELECT route_id AS start_routes FROM route_stops WHERE route_stops.station_id = start_station;
     SELECT route_id AS end_routes FROM route_stops WHERE route_stops.station_id = end_station;
     SELECT start_routes.route_id AS has_both FROM start_routes INNER JOIN end_routes ON start_routes.route_id = end_routes.route_id;
-    SELECT DISTINCT has_both.route_id FROM has_both INNER JOIN schedule ON has_both.route_id = schedule.schedule_route_id WHERE schedule.day_of_week = weekday;
+    RETURN QUERY
+      SELECT DISTINCT has_both.route_id FROM has_both INNER JOIN schedule ON has_both.route_id = schedule.schedule_route_id WHERE schedule.day_of_week = weekday;
   END
 $$ LANGUAGE plpgsql;
+SELECT * FROM single_route(2, 3, 'Saturday') as t;
+
 --1.2.2 Combination Route Trip Search
 CREATE OR REPLACE FUNCTION combination_route(start_station INTEGER, end_station INTEGER, weekday VARCHAR) RETURNS SETOF route
 AS $$
   BEGIN
     --***NEED to add ORDER to the route_stations/route_stops for this query
     RETURN QUERY
-    SELECT route_id AS start_routes FROM route_stops WHERE route_stops.station_id = start_station;
-    SELECT route_id AS end_routes FROM route_stops WHERE route_stops.station_id = end_station;
-    SELECT start_routes.route_id AS has_both FROM start_routes INNER JOIN end_routes ON start_routes.route_id = end_routes.route_id;
-    SELECT DISTINCT has_both.route_id FROM has_both INNER JOIN schedule ON has_both.route_id = schedule.schedule_route_id WHERE schedule.day_of_week = weekday;
+    SELECT route_id INTO start_routes FROM route_stops WHERE route_stops.station_id = 2;
+    SELECT route_id INTO end_routes FROM route_stops WHERE route_stops.station_id = 3;
+    SELECT start_routes.route_id INTO has_both FROM start_routes INNER JOIN end_routes ON start_routes.route_id = end_routes.route_id;
+    RETURN QUERY
+      SELECT DISTINCT has_both.route_id FROM has_both INNER JOIN schedule ON has_both.route_id = schedule.schedule_route_id WHERE schedule.day_of_week = weekday;
   END
 $$ LANGUAGE plpgsql;
 /*
@@ -124,6 +130,7 @@ AS $$
     RETURN QUERY
     --count must be 350 for all trains to pass through all stations
     SELECT DISTINCT route_stops.station_id, schedule.schedule_train_id AS station_train_list FROM route_stops FULL OUTER JOIN schedule ON route_stops.route_id = schedule.schedule_route_id;
+    RETURN QUERY
     SELECT station_id, COUNT(*) FROM station_train_list GROUP BY station_id HAVING COUNT(*) = 350;
   END
 $$ LANGUAGE plpgsql;
@@ -161,12 +168,38 @@ $$ LANGUAGE plpgsql;
 --SELECT * FROM DisplayRouteSchedule(134) as t;
 
 --1.3.8 Find the availability of a route at every stop on a specific day and time; returns available number of seats
-  CREATE OR REPLACE FUNCTION route_train_availability_every_stop(routeID INTEGER, day_of_week VARCHAR, time_of_day TIME) RETURNS INTEGER AS $$
+  CREATE OR REPLACE FUNCTION route_train_availability_every_stop(day_of_week VARCHAR, time_of_day TIME) RETURNS INTEGER AS $$
   BEGIN
-    --FUNCTION incomplete; need to add order
+    --FUNCTION incomplete; need to add order; check availability of seats at every stop
     SELECT station_id as station_stops FROM route_stops WHERE route_stops.route_id = routeID;
   END
 $$ LANGUAGE plpgsql;
 -- Find the number of available seats at each stop of a route for the day and time given as parameters. 
+
+--2.3 DROP ALL TABLES
+--DROP TABLE IF EXISTS station CASCADE;DROP TABLE IF EXISTS rail_line CASCADE;DROP TABLE IF EXISTS route CASCADE;DROP TABLE IF EXISTS route_stations;DROP TABLE IF EXISTS rail_line_stations;DROP TABLE IF EXISTS route_stops;DROP TABLE IF EXISTS train CASCADE;DROP TABLE IF EXISTS schedule CASCADE;DROP TABLE IF EXISTS customer CASCADE;
+
+--2.2 EXPORT
+--COPY (SELECT * FROM customer) TO 'C:\database\customer.txt' WITH DELIMITER ';';
+--COPY (SELECT * FROM rail_line) TO 'C:\database\rail_line.txt' WITH DELIMITER ';';
+--COPY (SELECT * FROM rail_line_stations) TO 'C:\database\rail_line_stations.txt' WITH DELIMITER ';';
+--COPY (SELECT * FROM route) TO 'C:\database\route.txt' WITH DELIMITER ';';
+--COPY (SELECT * FROM route_stations) TO 'C:\database\route_stations.txt' WITH DELIMITER ';';
+--COPY (SELECT * FROM route_stops) TO 'C:\database\route_stops.txt' WITH DELIMITER ';';
+--COPY (SELECT * FROM schedule) TO 'C:\database\schedule.txt' WITH DELIMITER ';';
+--COPY (SELECT * FROM station)TO 'C:\database\station.txt'WITH DELIMITER ';';
+--COPY (SELECT * FROM train)TO 'C:\database\train.txt' WITH DELIMITER ';';
+
+--2.1 IMPORT
+--COPY customer FROM 'C:\database\customer.txt' WITH DELIMITER ';';
+--COPY rail_line FROM 'C:\database\rail_line.txt' WITH DELIMITER ';';
+--COPY route FROM 'C:\database\route.txt' WITH DELIMITER ';';
+--COPY station FROM 'C:\database\station.txt' WITH DELIMITER ';';
+--COPY train FROM 'C:\database\train.txt' WITH DELIMITER ';';
+--COPY schedule FROM 'C:\database\schedule.txt' WITH DELIMITER ';';
+--COPY rail_line_stations FROM 'C:\database\rail_line_stations.txt' WITH DELIMITER ';';
+--COPY route_stations FROM 'C:\database\route_stations.txt' WITH DELIMITER ';';
+--COPY route_stops FROM 'C:\database\route_stops.txt' WITH DELIMITER ';';
+
 
 

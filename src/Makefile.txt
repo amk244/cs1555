@@ -1,0 +1,5 @@
+# build an executable class named ExpressRailway from ExpressRailway.java
+all: lexer.c
+	javac -cp postgresql-42.2.5.jar ExpressRailway.java
+clean: 
+	$(RM) ExpressRailway
