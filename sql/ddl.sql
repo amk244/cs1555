@@ -91,3 +91,9 @@ CREATE TABLE customer
 	CONSTRAINT customer_pk
 		PRIMARY KEY(customer_id)
 );
+
+CREATE INDEX idx_customer_id
+ON customer(customer_id);
+
+CREATE INDEX idx_station
+ON station(station_id);

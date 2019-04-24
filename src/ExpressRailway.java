@@ -216,7 +216,7 @@ public class ExpressRailway {
 	
     }
 
-    ///////////////////Option 1.1.3 - View A Customer////////////////////////
+    ///////////////////Option 1.1.3 - View The Customers////////////////////////
     public void Option113() {
 	
 	int counter = 1;
@@ -289,21 +289,27 @@ public class ExpressRailway {
         prepStatement.setString(3, day);
         resultSet = prepStatement.executeQuery();
 
-       while (resultSet.next())
-	   {
-			System.out.println("RouteID:" + resultSet.getInt(1));
-	   }
+        if(resultSet.next())
+        {
+        	System.out.println("RouteID:" + resultSet.getInt(1));
+        	while (resultSet.next())
+	   		{
+				System.out.println("RouteID:" + resultSet.getInt(1));
+	   		}
+        }else{
+			System.out.println("No results found.");
+        }
 
-	   System.out.println("The folowing sorting options are available, choose one of the following: ");
-	   System.out.println("Type 1 to sort by Fewest Stops (Option 1.2.4.1)");
-	   System.out.println("Type 2 to sort by Runs through the most stations (Option 1.2.4.2)");
-	   System.out.println("Type 3 to sort by Lowest Price (Option 1.2.4.3)");
-	   System.out.println("Type 4 to sort by Highest Price (Option 1.2.4.4)");
-	   System.out.println("Type 5 to sort by Least Total Time (Option 1.2.4.5)");
-	   System.out.println("Type 6 to sort by Most Total Time (Option 1.2.4.6)");
-	   System.out.println("Type 7 to sort by Least Total Distance (Option 1.2.4.7)");
-	   System.out.println("Type 8 to sort by Most Total Distance (Option 1.2.4.8)");
-       int option = in.nextInt();
+	   //System.out.println("The folowing sorting options are available, choose one of the following: ");
+	   //System.out.println("Type 1 to sort by Fewest Stops (Option 1.2.4.1)");
+	   //System.out.println("Type 2 to sort by Runs through the most stations (Option 1.2.4.2)");
+	   //System.out.println("Type 3 to sort by Lowest Price (Option 1.2.4.3)");
+	   //System.out.println("Type 4 to sort by Highest Price (Option 1.2.4.4)");
+	   //System.out.println("Type 5 to sort by Least Total Time (Option 1.2.4.5)");
+	   //System.out.println("Type 6 to sort by Most Total Time (Option 1.2.4.6)");
+	   //System.out.println("Type 7 to sort by Least Total Distance (Option 1.2.4.7)");
+	   //System.out.println("Type 8 to sort by Most Total Distance (Option 1.2.4.8)");
+       //int option = in.nextInt();
 
 	    resultSet.close();
 	}	
@@ -341,21 +347,27 @@ public class ExpressRailway {
         prepStatement.setString(3, day);
         resultSet = prepStatement.executeQuery();
 
-       while (resultSet.next())
-	   {
-			System.out.println("RouteID:" + resultSet.getInt(1));
-	   }
+       if(resultSet.next())
+        {
+        	System.out.println("RouteID:" + resultSet.getInt(1));
+        	while (resultSet.next())
+	   		{
+				System.out.println("RouteID:" + resultSet.getInt(1));
+	   		}
+        }else{
+			System.out.println("No results found.");
+        }
 
-	   System.out.println("The folowing sorting options are available, choose one of the following: ");
-	   System.out.println("Type 1 to sort by Fewest Stops (Option 1.2.4.1)");
-	   System.out.println("Type 2 to sort by Runs through the most stations (Option 1.2.4.2)");
-	   System.out.println("Type 3 to sort by Lowest Price (Option 1.2.4.3)");
-	   System.out.println("Type 4 to sort by Highest Price (Option 1.2.4.4)");
-	   System.out.println("Type 5 to sort by Least Total Time (Option 1.2.4.5)");
-	   System.out.println("Type 6 to sort by Most Total Time (Option 1.2.4.6)");
-	   System.out.println("Type 7 to sort by Least Total Distance (Option 1.2.4.7)");
-	   System.out.println("Type 8 to sort by Most Total Distance (Option 1.2.4.8)");
-       int option = in.nextInt();
+	   //System.out.println("The folowing sorting options are available, choose one of the following: ");
+	   //System.out.println("Type 1 to sort by Fewest Stops (Option 1.2.4.1)");
+	   //System.out.println("Type 2 to sort by Runs through the most stations (Option 1.2.4.2)");
+	   //System.out.println("Type 3 to sort by Lowest Price (Option 1.2.4.3)");
+	   //System.out.println("Type 4 to sort by Highest Price (Option 1.2.4.4)");
+	   //System.out.println("Type 5 to sort by Least Total Time (Option 1.2.4.5)");
+	   //System.out.println("Type 6 to sort by Most Total Time (Option 1.2.4.6)");
+	   //System.out.println("Type 7 to sort by Least Total Distance (Option 1.2.4.7)");
+	   //System.out.println("Type 8 to sort by Most Total Distance (Option 1.2.4.8)");
+       //int option = in.nextInt();
 
 	    resultSet.close();
 	}	
@@ -389,6 +401,8 @@ public class ExpressRailway {
         prepStatement.setInt(1, id);
         prepStatement.setString(2, day);
         prepStatement.execute();
+
+        System.out.println("Your reservation was added. ");
 	}	
 	catch(Exception Ex)  
 	{
@@ -419,12 +433,22 @@ public class ExpressRailway {
         String day = in.nextLine();
         System.out.println("Enter the time: ");
         String time = in.nextLine(); 
-        query = "CALL trains_specific_day_time(?, ?, ?)";
-        prepStatement = connection.prepareCall(query);
+        query = "SELECT * FROM trains_specific_day_time(?, ?, ?)";
+        prepStatement = connection.prepareStatement(query);
         prepStatement.setInt(1, num);
         prepStatement.setString(2, day);
         prepStatement.setTime(3, java.sql.Time.valueOf(time));
-        prepStatement.execute();
+        resultSet = prepStatement.executeQuery();
+        if(resultSet.next())
+        {
+        	System.out.println("TrainID:" + resultSet.getInt(1));
+        	while (resultSet.next())
+	   		{
+				System.out.println("TrainID:" + resultSet.getInt(1));
+	   		}
+        }else{
+			System.out.println("No trains that pass through a specific station at the specific day/time.");
+        }
 	}	
 	catch(Exception Ex)  
 	{
@@ -445,13 +469,19 @@ public class ExpressRailway {
     public void Option132() {
 	try {
 		statement = connection.createStatement(); //create an instance
-	    String selectQuery = "SELECT * routes_more_than_one_rail_line()"; //query
+	    String selectQuery = "SELECT * FROM routes_more_than_one_rail_line()"; //query
         resultSet = statement.executeQuery(selectQuery);
 
-        while (resultSet.next()) //this not only keeps track of if another record
-		//exists but moves us forward to the first record
-	    {
-	    }
+        if(resultSet.next())
+        {
+        	System.out.println("RouteID:" + resultSet.getInt(1));
+        	while (resultSet.next())
+	   		{
+				System.out.println("RouteID:" + resultSet.getInt(1));
+	   		}
+        }else{
+			System.out.println("No routes that travel more than one rail line.");
+        }
 	}	
 	catch(Exception Ex)  
 	{
@@ -472,13 +502,19 @@ public class ExpressRailway {
     public void Option133() {
 	try {
 		statement = connection.createStatement(); //create an instance
-	    String selectQuery = "SELECT * routes_same_stations_not_stops()"; //query
+	    String selectQuery = "SELECT * FROM routes_same_stations_not_stops();"; //query
         resultSet = statement.executeQuery(selectQuery);
 
-        while (resultSet.next()) //this not only keeps track of if another record
-		//exists but moves us forward to the first record
-	    {
-	    }
+        if(resultSet.next())
+        {
+        	System.out.println("RouteID:" + resultSet.getInt(1));
+        	while (resultSet.next())
+	   		{
+				System.out.println("RouteID:" + resultSet.getInt(1));
+	   		}
+        }else{
+			System.out.println("No routes that pass through the same stations but don't have the same stops.");
+        }
 	}	
 	catch(Exception Ex)  
 	{
@@ -499,13 +535,19 @@ public class ExpressRailway {
     public void Option134() {
 	try {
 		statement = connection.createStatement(); //create an instance
-	    String selectQuery = "SELECT * stations_all_trains_pass_through()"; //query
+	    String selectQuery = "SELECT * FROM stations_all_trains_pass_through()"; //query
         resultSet = statement.executeQuery(selectQuery);
 
-        while (resultSet.next()) //this not only keeps track of if another record
-		//exists but moves us forward to the first record
-	    {
-	    }
+        if(resultSet.next())
+        {
+        	System.out.println("StationID:" + resultSet.getInt(1));
+        	while (resultSet.next())
+	   		{
+				System.out.println("StationID:" + resultSet.getInt(1));
+	   		}
+        }else{
+			System.out.println("No stations that all trains pass through.");
+        }
 	}	
 	catch(Exception Ex)  
 	{
@@ -529,14 +571,20 @@ public class ExpressRailway {
 		Scanner in = new Scanner(System.in);
 		System.out.println("Enter the station id: ");
 		int num = in.nextInt();
-        query = "SELECT * trains_do_not_stop_at_station(?)";
+        query = "SELECT * FROM trains_do_not_stop_at_station(?);";
         prepStatement = connection.prepareStatement(query);
         prepStatement.setInt(1, num);
         resultSet = prepStatement.executeQuery();
-        while (resultSet.next()) //this not only keeps track of if another record
-		//exists but moves us forward to the first record
-	    {
-	    }
+        if(resultSet.next())
+        {
+        	System.out.println("TrainID:" + resultSet.getInt(1));
+        	while (resultSet.next())
+	   		{
+				System.out.println("TrainID:" + resultSet.getInt(1));
+	   		}
+        }else{
+			System.out.println("No trains that do not stop at a specific station.");
+        }
 	}	
 	catch(Exception Ex)  
 	{
@@ -559,15 +607,21 @@ public class ExpressRailway {
 		
 		Scanner in = new Scanner(System.in);
 		System.out.println("Enter the percentage of stop/stations: ");
-		int num = in.nextInt();
-        query = "SELECT * routes_stop_at_XX(?)";
+		float num = in.nextFloat();
+        query = "SELECT * FROM routes_stop_at_XX(?);";
         prepStatement = connection.prepareStatement(query);
-        prepStatement.setInt(1, num);
+        prepStatement.setFloat(1, num);
         resultSet = prepStatement.executeQuery();
-        while (resultSet.next()) //this not only keeps track of if another record
-		//exists but moves us forward to the first record
-	    {
-	    }
+        if(resultSet.next())
+        {
+        	System.out.println("RouteID:" + resultSet.getInt(1));
+        	while (resultSet.next())
+	   		{
+				System.out.println("RouteID:" + resultSet.getInt(1));
+	   		}
+        }else{
+			System.out.println("No routes that stop at at least " + num + "% of the Stations they visit.");
+        }
 	}	
 	catch(Exception Ex)  
 	{
@@ -595,14 +649,22 @@ public class ExpressRailway {
         prepStatement = connection.prepareStatement(query);
         prepStatement.setInt(1, num);
         resultSet = prepStatement.executeQuery();
-        while (resultSet.next()) //this not only keeps track of if another record
-		//exists but moves us forward to the first record
-	    {
-	    	System.out.println("Route ID " + resultSet.getInt(1) + ": " +
-		      resultSet.getString(2) + ", " + 
-		      resultSet.getTime(3) + ", " +   
-		      resultSet.getInt(4));
-	    }
+        if(resultSet.next())
+        {
+        	System.out.println("Route ID " + resultSet.getInt(1) + ": " +
+		      "Day of the week: " + resultSet.getString(2) + ", " + 
+		      "Time of day: "+ resultSet.getTime(3) + ", " +   
+		      "TrainID: " + resultSet.getInt(4));
+        	while (resultSet.next())
+	   		{
+				System.out.println("Route ID " + resultSet.getInt(1) + ": " +
+		      "Day of the week: " + resultSet.getString(2) + ", " + 
+		      "Time of day: "+ resultSet.getTime(3) + ", " +   
+		      "TrainID: " + resultSet.getInt(4));
+	   		}
+        }else{
+			System.out.println("No schedules associated with the specific route.");
+        }
 	}	
 	catch(Exception Ex)  
 	{
@@ -619,25 +681,34 @@ public class ExpressRailway {
 	
     }
 
-    //////////////////Option 1.3.8 - Find availability of a route at every stop on a specific day and time ////////////////////////
+    //////////////////Option 1.3.8 - Find availability of a specific route at every stop on a specific day and time ////////////////////////
     public void Option138() {
 	try {
 		
 		Scanner in = new Scanner(System.in);
+		System.out.println("Enter the route: ");
+		int route = in.nextInt();
+		in.nextLine(); //eat white space
 		System.out.println("Enter the day: ");
-		in.nextLine(); //eat new line
         String day = in.nextLine();
         System.out.println("Enter the time: ");
         String time = in.nextLine(); 
-        query = "SELECT * FROM route_train_availability_every_stop(?, ?)";
+        query = "SELECT * FROM route_train_availability_every_stop(?, ?, ?)";
         prepStatement = connection.prepareStatement(query);
-        prepStatement.setString(1, day);
-        prepStatement.setTime(2, java.sql.Time.valueOf(time));
+        prepStatement.setInt(1, route);
+        prepStatement.setString(2, day);
+        prepStatement.setTime(3, java.sql.Time.valueOf(time));
         resultSet = prepStatement.executeQuery();
-        while (resultSet.next()) //this not only keeps track of if another record
-		//exists but moves us forward to the first record
-	    {
-	    }
+        if(resultSet.next())
+        {
+        	System.out.println("Num Seats" + resultSet.getInt(1) + "StationID" + resultSet.getInt(2));
+        	while (resultSet.next())
+	   		{
+				System.out.println("Num Seats" + resultSet.getInt(1) + "StationID" + resultSet.getInt(1));
+	   		}
+        }else{
+			System.out.println("No availability of a specific route at every stop on a specific day and time");
+        }
 	}	
 	catch(Exception Ex)  
 	{
@@ -656,12 +727,23 @@ public class ExpressRailway {
 
  ///////////////////////////// 2 -  DATABASE ADMINISTRATION /////////////////////////////
 
- ///////////////////Option 2.1 - Export Data From The Database////////////////////////
+ ///////////////////Option 2.1 - Import Data From The Database////////////////////////
     public void Option21() {
 	
 	try{
-		System.out.println("Enter the filepath with the datafiles to be exported (i.e. C:\\temp: )");
-		Scanner in = new Scanner(System.in);
+		System.out.println("Please verify the administrator password: ");
+	    Scanner in = new Scanner(System.in);
+	    String answer = in.nextLine();
+	    if(answer.equals("cs1555"))
+	    {
+
+	    }else
+	    {
+	    	System.out.println("ADMINISTRATION password NOT verified.");
+	    	System.exit(0);
+	    }
+
+		System.out.println("Enter the filepath with the datafiles to be imported (i.e. C:\\temp: )");
 	    String filepath = in.nextLine();
 	    statement = connection.createStatement(); //create an instance
 	    String selectQuery = "COPY customer FROM '" + filepath + "\\customer.txt' WITH DELIMITER ';';COPY rail_line FROM '" + filepath + "\\rail_line.txt' WITH DELIMITER ';';COPY route FROM '" + filepath + "\\route.txt' WITH DELIMITER ';';COPY station FROM '" + filepath + "\\station.txt' WITH DELIMITER ';';COPY train FROM '" + filepath + "\\train.txt' WITH DELIMITER ';';COPY schedule FROM '" + filepath + "\\schedule.txt' WITH DELIMITER ';';COPY rail_line_stations FROM '" + filepath + "\\rail_line_stations.txt' WITH DELIMITER ';';COPY route_stations FROM '" + filepath + "\\route_stations.txt' WITH DELIMITER ';';COPY route_stops FROM '" + filepath + "\\route_stops.txt' WITH DELIMITER ';';";
@@ -680,19 +762,32 @@ public class ExpressRailway {
 	}
  }
 
- ///////////////////Option 2.2 - Import Data To The Database////////////////////////
+ ///////////////////Option 2.2 - Export Data From The Database////////////////////////
     public void Option22() {
 	
 	try{
-		System.out.println("Enter the filepath with the datafiles to be imported: (i.e. C:\\temp: )");
-		Scanner in = new Scanner(System.in);
+		System.out.println("Please verify the administrator password: ");
+	    Scanner in = new Scanner(System.in);
+	    String answer = in.nextLine();
+	    if(answer.equals("cs1555"))
+	    {
+
+	    }else
+	    {
+	    	System.out.println("ADMINISTRATION password NOT verified.");
+	    	System.exit(0);
+	    }
+
+		System.out.println("Enter the filepath for the datafiles to be exported to: (i.e. C:\\temp: )");
 	    String filepath = in.nextLine();
 	    statement = connection.createStatement(); //create an instance
 	  	String selectQuery = "COPY (SELECT * FROM customer) TO '" + filepath + "\\customer.txt' WITH DELIMITER ';';COPY (SELECT * FROM rail_line) TO '" + filepath + "\\rail_line.txt' WITH DELIMITER ';';COPY (SELECT * FROM rail_line_stations) TO '" + filepath + "\\rail_line_stations.txt' WITH DELIMITER ';';COPY (SELECT * FROM route) TO '" + filepath + "\\route.txt' WITH DELIMITER ';';COPY (SELECT * FROM route_stations) TO '" + filepath + "\\route_stations.txt' WITH DELIMITER ';';COPY (SELECT * FROM route_stops) TO '" + filepath + "\\route_stops.txt' WITH DELIMITER ';';COPY (SELECT * FROM schedule) TO '" + filepath + "\\schedule.txt' WITH DELIMITER ';';COPY (SELECT * FROM station)TO '" + filepath + "\\station.txt'WITH DELIMITER ';';COPY (SELECT * FROM train)TO '" + filepath + "\\train.txt' WITH DELIMITER ';';";
 	    statement.execute(selectQuery);
+
+	    System.out.println("Your files have been copied to " + "'" + filepath + "'");
 	}
 	catch(SQLException Ex) {
-	    System.out.println("Error importing data  Machine Error: " +
+	    System.out.println("Error exporting data  Machine Error: " +
 			       Ex.toString());
 	}
 	finally{
@@ -708,9 +803,20 @@ public class ExpressRailway {
     public void Option23() {
 	
 	try{
-	    System.out.println("Are you sure you want to delete the database (type 'yes' for confirmation)");
+		System.out.println("Please verify the administrator password: ");
 	    Scanner in = new Scanner(System.in);
 	    String answer = in.nextLine();
+	    if(answer.equals("cs1555"))
+	    {
+
+	    }else
+	    {
+	    	System.out.println("ADMINISTRATION password NOT verified.");
+	    	System.exit(0);
+	    }
+
+	    System.out.println("Are you sure you want to delete the database (type 'yes' for confirmation)");
+	    answer = in.nextLine();
 	    if(answer.equals("yes"))
 	    {
 	    	statement = connection.createStatement(); //create an instance
@@ -786,35 +892,39 @@ public class ExpressRailway {
 		System.out.println("Type 15 to export data from the tables in the database (Option 2.2)");
 		System.out.println("Type 16 to DELETE all the rows from the ENTIRE database (Option 2.3)");
 		System.out.println("Type 17 to EXIT the program. ");
-	    Scanner in = new Scanner(System.in);
-        int choice = in.nextInt();
-        switch(choice){
-			case 0:
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-			case 7:
-			case 8:
-			case 9:
-			case 10:
-			case 11:
-			case 12:
-			case 13:
-			case 14:
-			case 15:
-			case 16:
-	    		ExpressRailway demo = new ExpressRailway(choice);
-	    		break;
-			case 17:
-				System.out.println("EXITING program.....");
-	    		System.exit(0);
-			default:
-	    		System.out.println("Invalid choice enetered: " + choice);
-	    		break;
-		}    
+
+		Scanner in = new Scanner(System.in);
+        while(true)
+        {
+        	int choice = in.nextInt();
+        	switch(choice){
+				case 0:
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+				case 7:
+				case 8:
+				case 9:
+				case 10:
+				case 11:
+				case 12:
+				case 13:
+				case 14:
+				case 15:
+				case 16:
+	    			ExpressRailway demo = new ExpressRailway(choice);
+	    			break;
+	    		case 17:
+					System.out.println("EXITING program.....");
+	    			System.exit(0);
+				default:
+	    			System.out.println("Invalid choice entered: " + choice);
+	    			break;
+			}    
+		}
 	}
 	catch(Exception Ex)  {
 	    System.out.println("Error connecting to database.  Machine Error: " +
